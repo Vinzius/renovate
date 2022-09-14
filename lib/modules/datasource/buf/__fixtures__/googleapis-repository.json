@@ -1,0 +1,13 @@
+{
+  "repository": {
+    "id": "c84e502e-8a35-4bdc-aae4-a5dbdf9a685c",
+    "createTime": "2022-09-06T17:15:20.275814Z",
+    "updateTime": "2022-09-06T17:15:20.275814Z",
+    "name": "googleapis",
+    "organizationId": "7d1a4e2c-4248-470c-ba37-bab1529bbe8b",
+    "visibility": "VISIBILITY_PUBLIC"
+  },
+  "counts": {
+    "tagsCount": 19
+  }
+}
