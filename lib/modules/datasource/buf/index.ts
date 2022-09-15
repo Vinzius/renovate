@@ -2,6 +2,7 @@ import { logger } from '../../../logger';
 import { ExternalHostError } from '../../../types/errors/external-host-error';
 import { cache } from '../../../util/cache/package/decorator';
 import { HttpError } from '../../../util/http';
+import * as gitVersioning from '../../versioning/git';
 import { Datasource } from '../datasource';
 import type { GetReleasesConfig, ReleaseResult } from '../types';
 import {
@@ -26,6 +27,8 @@ export class BufDatasource extends Datasource {
   override readonly customRegistrySupport = false;
 
   override readonly defaultRegistryUrls = [defaultRegistryUrl];
+
+  override readonly defaultVersioning = gitVersioning.id;
 
   override readonly caching = true;
 
