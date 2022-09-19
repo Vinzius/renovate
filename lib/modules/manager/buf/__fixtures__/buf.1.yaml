@@ -1,0 +1,4 @@
+version: v1
+name: buf.build/scaleway/protobuf
+deps:
+  - buf.build/googleapis/googleapis

@@ -9,6 +9,7 @@ export enum ProgrammingLanguage {
   NET = 'dotnet',
   NodeJS = 'node',
   PHP = 'php',
+  Protobuf = 'protobuf',
   Python = 'python',
   Ruby = 'ruby',
   Rust = 'rust',

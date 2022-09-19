@@ -67,7 +67,7 @@ export class BufDatasource extends Datasource {
     key: ({ registryUrl, packageName }: GetReleasesConfig) =>
       // TODO: types (#7154)
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `${registryUrl}`,
+      `${registryUrl}-${packageName}`,
   })
   async getReleases({
     registryUrl,
