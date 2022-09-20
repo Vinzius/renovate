@@ -2,7 +2,7 @@ import { Fixtures } from '../../../../test/fixtures';
 // import type { UpdateType } from '../../../config/types';
 import { updateDependency } from '.';
 
-const bufYaml1 = Fixtures.get('buf.1.yaml');
+const bufYaml1 = Fixtures.get('buf.1.lock');
 
 describe('modules/manager/buf/update', () => {
   describe('updateDependency', () => {
@@ -10,7 +10,7 @@ describe('modules/manager/buf/update', () => {
       const upgrade = {
         depName: 'buf.build/googleapis/googleapis',
         managerData: { lineNumber: 4 },
-        newValue: 'v2',
+        newValue: '2df0a828908fb3bf260eda85e12a9fea',
         depType: 'require',
       };
       const res = updateDependency({

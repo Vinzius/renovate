@@ -1,5 +1,5 @@
-// Api page size limit 100
-export const pageSize = 100;
+// Api page size limit 30
+export const pageSize = 30;
 
 export const homepageUrl = 'https://buf.build/';
 
@@ -8,8 +8,6 @@ export const defaultRegistryUrl = 'https://api.buf.build/';
 export const datasource = 'buf';
 
 export const apiPaths = {
-  getRepository:
-    'buf.alpha.registry.v1alpha1.RepositoryService/GetRepositoryByFullName',
-  listRepositoryTags:
-    'buf.alpha.registry.v1alpha1.RepositoryTagService/ListRepositoryTags',
+  listRepositoryCommits:
+    'buf.alpha.registry.v1alpha1.RepositoryCommitService/ListRepositoryCommitsByReference',
 };

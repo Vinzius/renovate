@@ -12,10 +12,7 @@ import {
   homepageUrl,
   pageSize,
 } from './common';
-import type {
-  BufGetRepositoryResponse,
-  BufListRepositoryTagsResponse,
-} from './types';
+import type { BufListRepositoryCommitsResponse } from './types';
 
 export class BufDatasource extends Datasource {
   static readonly id = datasource;
@@ -32,31 +29,23 @@ export class BufDatasource extends Datasource {
 
   override readonly caching = true;
 
-  private getRepository(
+  private getRepositoryCommits(
     registryUrl: string,
-    repositoryFullName: string
-  ): Promise<BufGetRepositoryResponse> {
+    repositoryOwner: string,
+    repositoryName: string
+  ): Promise<BufListRepositoryCommitsResponse> {
     return this.http
-      .postJson<BufGetRepositoryResponse>(
-        `${registryUrl}${apiPaths.getRepository}`,
+      .postJson<BufListRepositoryCommitsResponse>(
+        `${registryUrl}${apiPaths.listRepositoryCommits}`,
         {
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ fullName: repositoryFullName }),
-        }
-      )
-      .then((obj) => obj.body);
-  }
-
-  private getRepositoryTags(
-    registryUrl: string,
-    repositoryId: string
-  ): Promise<BufListRepositoryTagsResponse> {
-    return this.http
-      .postJson<BufListRepositoryTagsResponse>(
-        `${registryUrl}${apiPaths.listRepositoryTags}`,
-        {
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ repositoryId, pageSize, reverse: true }),
+          body: {
+            repositoryOwner,
+            repositoryName,
+            reference: 'main',
+            pageSize,
+            reverse: true,
+          },
         }
       )
       .then((obj) => obj.body);
@@ -74,6 +63,7 @@ export class BufDatasource extends Datasource {
     packageName,
   }: GetReleasesConfig): Promise<ReleaseResult | null> {
     if (!registryUrl) {
+      logger.debug('no registry url for buf');
       return null;
     }
     const result: ReleaseResult = {
@@ -81,20 +71,26 @@ export class BufDatasource extends Datasource {
       releases: [],
     };
     try {
-      logger.trace({ registryUrl, packageName }, 'fetching buf repository');
-      const repositoryRes = await this.getRepository(registryUrl, packageName);
-      logger.trace(
-        { registryUrl, repositoryId: repositoryRes.repository.id },
-        'fetching buf repository tags'
-      );
-      const tagsRes = await this.getRepositoryTags(
+      logger.trace({ registryUrl, packageName }, 'fetching buf commits');
+      const components = packageName.split('/');
+      if (components.length !== 2) {
+        logger.error(
+          { components },
+          'splitting packageName created an invalid array length (should be 2)'
+        );
+        return null;
+      }
+      const commitsRes = await this.getRepositoryCommits(
         registryUrl,
-        repositoryRes.repository.id
+        components[0],
+        components[1]
       );
-      result.releases = tagsRes.repositoryTags.map((obj) => ({
-        version: obj.commitName,
+      result.releases = commitsRes.repositoryCommits.map((obj) => ({
+        version: obj.name,
         releaseTimestamp: obj.createTime,
+        isStable: true,
       }));
+      // console.log(`data: ${JSON.stringify(result.releases)}`)
     } catch (err) {
       // istanbul ignore else: not testable with nock
       if (err instanceof HttpError) {
